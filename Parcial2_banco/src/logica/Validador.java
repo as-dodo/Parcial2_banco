@@ -13,7 +13,7 @@ public class Validador {
 
     public static boolean emailExisteEnClientes(String email) {
         for (Cliente c : Cliente.clientes) {
-            if (c.getMail().equalsIgnoreCase(email)) {
+            if (c.getEmail().equalsIgnoreCase(email)) {
                 return true;
             }
         }
@@ -36,9 +36,9 @@ public class Validador {
         }
     }
 
-    public static String validarEmail(boolean verificarDuplicado) {
+    public static String validarEmail(String mensaje, boolean verificarDuplicado) {
         while (true) {
-            String email = JOptionPane.showInputDialog("Ingrese email:");
+            String email = JOptionPane.showInputDialog(mensaje);
             if (email == null) return null;
             if (!emailValido(email)) {
                 JOptionPane.showMessageDialog(null, "Email inválido.");
@@ -49,6 +49,7 @@ public class Validador {
             }
         }
     }
+
 
     public static String validarContrasenia() {
         while (true) {
@@ -61,4 +62,21 @@ public class Validador {
             }
         }
     }
+    public static Double validarMonto(String mensaje) {
+        while (true) {
+            String input = JOptionPane.showInputDialog(mensaje);
+            if (input == null) return null;
+            try {
+                double monto = Double.parseDouble(input);
+                if (monto <= 0) {
+                    JOptionPane.showMessageDialog(null, "El monto debe ser mayor que 0.");
+                } else {
+                    return monto;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Debe ingresar un número válido.");
+            }
+        }
+    }
+
 }

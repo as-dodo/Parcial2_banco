@@ -2,16 +2,16 @@ package logica;
 
 public abstract class Usuario {
     private String nombre;
-    private String mail;
+    private String email;
     private String contrasenia;
 
-    public Usuario(String nombre, String mail, String contrasenia) {
+    public Usuario(String nombre, String email, String contrasenia) {
         this.nombre = nombre;
-        this.mail = mail;
+        this.email = email;
         this.contrasenia = contrasenia;
     }
-    public Usuario(String mail, String contrasenia) {
-        this.mail = mail;
+    public Usuario(String email, String contrasenia) {
+        this.email = email;
         this.contrasenia = contrasenia;
     }
 
@@ -23,8 +23,8 @@ public abstract class Usuario {
         this.nombre = nombre;
     }
 
-    public String getMail() {
-        return mail;
+    public String getEmail() {
+        return email;
     }
 
     public String getContrasenia() {

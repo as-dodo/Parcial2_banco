@@ -1,8 +1,12 @@
 package logica;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Cuenta {
+
+    private static int contador = 1;
+    private List<Transaccion> transacciones = new ArrayList<>();
 
     private String numero;
     private double saldo;
@@ -15,7 +19,7 @@ public class Cuenta {
     }
 
     private String generarNumeroUnico() {
-        return UUID.randomUUID().toString().substring(0, 8); // короткий код
+        return "C" + (contador++);
     }
 
     public String getNumero() {
@@ -28,6 +32,14 @@ public class Cuenta {
 
     public TipoCuenta getTipo() {
         return tipo;
+    }
+
+    public List<Transaccion> getTransacciones() {
+        return transacciones;
+    }
+
+    public void agregarTransaccion(TipoTransaccion tipo, double monto, String detalle) {
+        transacciones.add(new Transaccion(tipo, monto, detalle));
     }
 
     public void depositar(double monto) {
@@ -45,10 +57,15 @@ public class Cuenta {
     }
 
     public boolean transferirA(Cuenta destino, double monto) {
-        if (retirar(monto)) {
+        if (this.retirar(monto)) {
             destino.depositar(monto);
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Cuenta " + numero + " (" + tipo + ") - Saldo: $" + saldo;
     }
 }

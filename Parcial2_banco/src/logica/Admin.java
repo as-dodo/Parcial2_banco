@@ -29,7 +29,7 @@ public class Admin extends Usuario{
     @Override
     public void Login() {
         for (Admin admin : admins){
-            if (admin.getMail().equals(this.getMail()) && admin.getContrasenia().equals(this.getContrasenia())) {
+            if (admin.getEmail().equals(this.getEmail()) && admin.getContrasenia().equals(this.getContrasenia())) {
                 admin.Menu();
                 return;
             }
@@ -91,7 +91,7 @@ public class Admin extends Usuario{
         String nombre = Validador.validarNombre();
         if (nombre == null) return;
 
-        String mail = Validador.validarEmail(true);
+        String mail = Validador.validarEmail("Ingrese email del cliente:", true);
         if (mail == null) return;
 
         String contrasenia = Validador.validarContrasenia();
@@ -104,12 +104,12 @@ public class Admin extends Usuario{
     }
 
     private void eliminarCliente() {
-        String mail = Validador.validarEmail(false);
+        String mail = Validador.validarEmail("Ingrese el email del cliente:", false);
         if (mail == null) return;
 
         Cliente clienteAEliminar = null;
         for (Cliente c : Cliente.clientes) {
-            if (c.getMail().equalsIgnoreCase(mail)) {
+            if (c.getEmail().equalsIgnoreCase(mail)) {
                 clienteAEliminar = c;
                 break;
             }
@@ -124,11 +124,11 @@ public class Admin extends Usuario{
     }
 
     private void modificarCliente() {
-        String mail = Validador.validarEmail(false);
+        String mail = Validador.validarEmail("Ingrese el email del cliente:", false);
         if (mail == null) return;
 
         for (Cliente c : Cliente.clientes) {
-            if (c.getMail().equalsIgnoreCase(mail)) {
+            if (c.getEmail().equalsIgnoreCase(mail)) {
                 String nuevoNombre = Validador.validarNombre();
                 if (nuevoNombre == null) return;
                 String nuevaContrasenia = Validador.validarContrasenia();
