@@ -1,13 +1,13 @@
 import logica.Admin;
 import logica.Cliente;
+import logica.DatosDePrueba;
 import logica.rol;
 
 import javax.swing.*;
 
 public class main {
     public static void main(String[] args) {
-        Admin.cargarAdmins();
-        Cliente.carga();
+        DatosDePrueba.cargar();
 
         Admin admin = new Admin("anastasia@gmail.com", "1234");
         admin.Login();

@@ -8,20 +8,17 @@ public class Admin extends Usuario{
 
     private static List<Admin> admins = new ArrayList<>();
 
-    public Admin(String nombre, String mail, String contrasenia, String sector) {
+    public Admin(String nombre, String mail, String contrasenia) {
         super(nombre, mail, contrasenia);
-        this.sector = sector;
     }
     public Admin( String mail, String contrasenia) {
         super( mail, contrasenia);
 
     }
 
-    private String sector;
-
     public static void cargarAdmins() {
-        admins.add(new Admin("Anastasia", "anastasia@gmail.com", "1234", "Sistemas"));
-        admins.add(new Admin("Django", "django@gmail.com", "abcd", "Recursos Humanos"));
+        admins.add(new Admin("Anastasia", "anastasia@gmail.com", "1234"));
+        admins.add(new Admin("Django", "django@gmail.com", "abcd"));
     }
 
     public static List<Admin> getAdmins() {
@@ -91,9 +88,15 @@ public class Admin extends Usuario{
     }
 
     private void agregarCliente(){
-        String nombre = JOptionPane.showInputDialog("Ingrese nombre del cliente:");
-        String mail = JOptionPane.showInputDialog("Ingrese email del cliente:");
-        String contrasenia = JOptionPane.showInputDialog("Ingrese contraseña:");
+        String nombre = Validador.validarNombre();
+        if (nombre == null) return;
+
+        String mail = Validador.validarEmail(true);
+        if (mail == null) return;
+
+        String contrasenia = Validador.validarContrasenia();
+        if (contrasenia == null) return;
+
         Cliente nuevo = new Cliente(nombre, mail, contrasenia);
         Cliente.clientes.add(nuevo);
 
@@ -101,7 +104,8 @@ public class Admin extends Usuario{
     }
 
     private void eliminarCliente() {
-        String mail = JOptionPane.showInputDialog("Ingrese el email del cliente a eliminar:");
+        String mail = Validador.validarEmail(false);
+        if (mail == null) return;
 
         Cliente clienteAEliminar = null;
         for (Cliente c : Cliente.clientes) {
@@ -120,12 +124,15 @@ public class Admin extends Usuario{
     }
 
     private void modificarCliente() {
-        String mail = JOptionPane.showInputDialog("Ingrese el email del cliente a modificar:");
+        String mail = Validador.validarEmail(false);
+        if (mail == null) return;
 
         for (Cliente c : Cliente.clientes) {
             if (c.getMail().equalsIgnoreCase(mail)) {
-                String nuevoNombre = JOptionPane.showInputDialog("Nuevo nombre:", c.getNombre());
-                String nuevaContrasenia = JOptionPane.showInputDialog("Nueva contraseña:");
+                String nuevoNombre = Validador.validarNombre();
+                if (nuevoNombre == null) return;
+                String nuevaContrasenia = Validador.validarContrasenia();
+                if (nuevaContrasenia == null) return;
 
                 c.setNombre(nuevoNombre);
                 c.setContrasenia(nuevaContrasenia);
