@@ -13,13 +13,13 @@ public class Transaccion {
         this.tipo = tipo;
         this.monto = monto;
         this.detalle = detalle;
-        this.fecha = LocalDateTime.now(); // дата и время создания
+        this.fecha = LocalDateTime.now();
     }
 
     public Transaccion(TipoTransaccion tipo, double monto) {
         this.tipo = tipo;
         this.monto = monto;
-        this.fecha = LocalDateTime.now(); // дата и время создания
+        this.fecha = LocalDateTime.now();
     }
 
     public TipoTransaccion getTipo() {
