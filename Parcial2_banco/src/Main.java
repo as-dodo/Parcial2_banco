@@ -1,16 +1,12 @@
-import logica.Admin;
-import logica.Cliente;
-import logica.DatosDePrueba;
-import logica.Validador;
-
+import logica.*;
 
 import javax.swing.*;
-
 
 public class Main {
     public static void main(String[] args) {
 
-        DatosDePrueba.cargar();
+        Banco banco = new Banco();
+        DatosDePrueba.cargar(banco);
 
         while (true) {
             String[] opciones = { "Iniciar sesión", "Salir" };
@@ -27,29 +23,35 @@ public class Main {
 
             if (opcion == 1 || opcion == JOptionPane.CLOSED_OPTION) break;
 
-            String email = Validador.validarEmail("Ingrese su email:", false);
+            String email = Validador.validarEmail("Ingrese su email:", false, banco);
             if (email == null) continue;
 
             String contrasenia = Validador.validarContrasenia();
             if (contrasenia == null) continue;
 
+            // Buscar admin
+            boolean loginExitoso = false;
             for (Admin admin : Admin.getAdmins()) {
                 if (admin.getEmail().equalsIgnoreCase(email) &&
                         admin.getContrasenia().equals(contrasenia)) {
-                    admin.Login();
-                    continue;
+                    admin.Login(banco);
+                    loginExitoso = true;
+                    break;
                 }
             }
 
-            for (Cliente cliente : Cliente.getClientes()) {
-                if (cliente.getEmail().equalsIgnoreCase(email) &&
-                        cliente.getContrasenia().equals(contrasenia)) {
-                    cliente.Login();
-                    continue;
+            // Buscar cliente
+            if (!loginExitoso) {
+                Cliente cliente = banco.buscarClientePorCredenciales(email, contrasenia);
+                if (cliente != null) {
+                    cliente.Login(banco);
+                    loginExitoso = true;
                 }
             }
 
-            JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.");
+            if (!loginExitoso) {
+                JOptionPane.showMessageDialog(null, "Usuario o contraseña incorrectos.");
+            }
         }
 
         JOptionPane.showMessageDialog(null, "¡Hasta luego!");

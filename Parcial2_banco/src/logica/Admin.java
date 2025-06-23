@@ -11,8 +11,8 @@ public class Admin extends Usuario{
     public Admin(String nombre, String mail, String contrasenia) {
         super(nombre, mail, contrasenia);
     }
-    public Admin( String mail, String contrasenia) {
-        super( mail, contrasenia);
+    public Admin( String email, String contrasenia) {
+        super( email, contrasenia);
 
     }
 
@@ -27,10 +27,10 @@ public class Admin extends Usuario{
 
 
     @Override
-    public void Login() {
+    public void Login(Banco banco) {
         for (Admin admin : admins){
             if (admin.getEmail().equals(this.getEmail()) && admin.getContrasenia().equals(this.getContrasenia())) {
-                admin.Menu();
+                admin.Menu(banco);
                 return;
             }
         }
@@ -38,7 +38,7 @@ public class Admin extends Usuario{
     }
 
     @Override
-    public void Menu() {
+    public void Menu(Banco banco) {
         String[] opciones = {
                 "Ver clientes",
                 "Ver transacciones",
@@ -63,12 +63,12 @@ public class Admin extends Usuario{
             );
 
             switch (opcion) {
-                case 0 -> verClientes();
-                case 1 -> verTransacciones();
-                case 2 -> agregarCliente();
-                case 3 -> eliminarCliente();
-                case 4 -> modificarCliente();
-                case 5 -> resumenSistema();
+                case 0 -> verClientes(banco);
+                case 1 -> verTransacciones(banco);
+                case 2 -> agregarCliente(banco);
+                case 3 -> eliminarCliente(banco);
+                case 4 -> modificarCliente(banco);
+                case 5 -> resumenSistema(banco);
                 case 6, JOptionPane.CLOSED_OPTION -> {
                     JOptionPane.showMessageDialog(null, "Sesión cerrada");
                     opcion = 6;
@@ -79,87 +79,103 @@ public class Admin extends Usuario{
         } while (opcion != 6);
     }
 
-    private void verClientes() {
-        JOptionPane.showMessageDialog(null, "Listado de clientes:\n(aquí se mostrarían los datos)");
+    private void verClientes(Banco banco) {
+        List<Cliente> clientes = banco.getClientes();
+        if (clientes.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No hay clientes registrados.");
+            return;
+        }
+
+        String mensaje = "Listado de clientes:\n";
+        for (Cliente c : clientes) {
+            mensaje += "- " + c.getNombre() + " (" + c.getEmail() + "), Cuentas: "
+                    + c.getCuentas().size() + "\n";
+        }
+
+        JOptionPane.showMessageDialog(null, mensaje);
     }
 
-    private void verTransacciones() {
-        JOptionPane.showMessageDialog(null, "Historial de transacciones:\n(aquí iría la lista de operaciones)");
+
+    private void verTransacciones(Banco banco) {
+        String mensaje = "Historial de transacciones:\n";
+        boolean hayTransacciones = false;
+
+        for (Cliente cliente : banco.getClientes()) {
+            for (Cuenta cuenta : cliente.getCuentas()) {
+                for (Transaccion t : cuenta.getTransacciones()) {
+                    mensaje += "- Cliente: " + cliente.getNombre()
+                            + ", Cuenta: " + cuenta.getNumero()
+                            + " (" + cuenta.getTipo() + ")"
+                            + " → " + t.toString() + "\n";
+                    hayTransacciones = true;
+                }
+            }
+        }
+
+        if (!hayTransacciones) {
+            mensaje += "(No hay transacciones registradas)";
+        }
+
+        JOptionPane.showMessageDialog(null, mensaje);
     }
 
-    private void agregarCliente(){
+
+    private void agregarCliente(Banco banco){
         String nombre = Validador.validarNombre();
         if (nombre == null) return;
 
-        String mail = Validador.validarEmail("Ingrese email del cliente:", true);
+        String mail = Validador.validarEmail("Ingrese email del cliente:", true, banco);
         if (mail == null) return;
 
         String contrasenia = Validador.validarContrasenia();
         if (contrasenia == null) return;
 
         Cliente nuevo = new Cliente(nombre, mail, contrasenia);
-        Cliente.clientes.add(nuevo);
+        banco.agregarCliente(nuevo);
 
         JOptionPane.showMessageDialog(null,"Cliente agregado con éxito." );
     }
 
-    private void eliminarCliente() {
-        String mail = Validador.validarEmail("Ingrese el email del cliente:", false);
+    private void eliminarCliente(Banco banco) {
+        String mail = Validador.validarEmail("Ingrese el email del cliente:", false, banco);
         if (mail == null) return;
 
-        Cliente clienteAEliminar = null;
-        for (Cliente c : Cliente.clientes) {
-            if (c.getEmail().equalsIgnoreCase(mail)) {
-                clienteAEliminar = c;
-                break;
-            }
-        }
-
+        Cliente clienteAEliminar = banco.buscarClientePorEmail(mail);
         if (clienteAEliminar != null) {
-            Cliente.clientes.remove(clienteAEliminar);
+            banco.getClientes().remove(clienteAEliminar);
             JOptionPane.showMessageDialog(null, "Cliente eliminado.");
         } else {
             JOptionPane.showMessageDialog(null, "Cliente no encontrado.");
         }
     }
 
-    private void modificarCliente() {
-        String mail = Validador.validarEmail("Ingrese el email del cliente:", false);
+    private void modificarCliente(Banco banco) {
+        String mail = Validador.validarEmail("Ingrese el email del cliente:", false, banco);
         if (mail == null) return;
 
-        for (Cliente c : Cliente.clientes) {
-            if (c.getEmail().equalsIgnoreCase(mail)) {
-                String nuevoNombre = Validador.validarNombre();
-                if (nuevoNombre == null) return;
-                String nuevaContrasenia = Validador.validarContrasenia();
-                if (nuevaContrasenia == null) return;
+        Cliente cliente = banco.buscarClientePorEmail(mail);
+        if (cliente != null) {
+            String nuevoNombre = Validador.validarNombre();
+            if (nuevoNombre == null) return;
+            String nuevaContrasenia = Validador.validarContrasenia();
+            if (nuevaContrasenia == null) return;
 
-                c.setNombre(nuevoNombre);
-                c.setContrasenia(nuevaContrasenia);
+            cliente.setNombre(nuevoNombre);
+            cliente.setContrasenia(nuevaContrasenia);
 
-                JOptionPane.showMessageDialog(null, "Datos actualizados.");
-                return;
-            }
+            JOptionPane.showMessageDialog(null, "Datos actualizados.");
+        } else {
+            JOptionPane.showMessageDialog(null, "Cliente no encontrado.");
         }
-
-        JOptionPane.showMessageDialog(null, "Cliente no encontrado.");
     }
 
-    private void resumenSistema() {
-        int totalClientes = Cliente.clientes.size();
+    private void resumenSistema(Banco banco) {
+        int totalClientes = banco.getClientes().size();
         int totalAdmins = Admin.getAdmins().size();
-        // int totalCuentas = Cuenta.getCantidadTotal(); // если потом добавим
-        // int totalTransacciones = Transaccion.getCantidad(); // если будет
 
         JOptionPane.showMessageDialog(null,
                 "Resumen del sistema:\n" +
                         "- Total de clientes: " + totalClientes + "\n" +
-                        "- Total de administradores: " + totalAdmins
-        );
+                        "- Total de administradores: " + totalAdmins);
     }
-
-
-
-
-
 }

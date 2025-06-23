@@ -11,14 +11,15 @@ public class Validador {
         return textoValido(email) && email.contains("@") && email.contains(".");
     }
 
-    public static boolean emailExisteEnClientes(String email) {
-        for (Cliente c : Cliente.clientes) {
+    public static boolean emailExisteEnClientes(Banco banco, String email) {
+        for (Cliente c : banco.getClientes()) {
             if (c.getEmail().equalsIgnoreCase(email)) {
                 return true;
             }
         }
         return false;
     }
+
 
     public static boolean contraseniaValida(String pass) {
         return textoValido(pass) && pass.length() >= 4;
@@ -36,13 +37,13 @@ public class Validador {
         }
     }
 
-    public static String validarEmail(String mensaje, boolean verificarDuplicado) {
+    public static String validarEmail(String mensaje, boolean verificarDuplicado, Banco banco) {
         while (true) {
             String email = JOptionPane.showInputDialog(mensaje);
             if (email == null) return null;
             if (!emailValido(email)) {
                 JOptionPane.showMessageDialog(null, "Email inválido.");
-            } else if (verificarDuplicado && emailExisteEnClientes(email)) {
+            } else if (verificarDuplicado && emailExisteEnClientes(banco, email)) {
                 JOptionPane.showMessageDialog(null, "Ese email ya está registrado.");
             } else {
                 return email;

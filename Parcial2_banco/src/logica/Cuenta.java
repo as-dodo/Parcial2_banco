@@ -3,23 +3,27 @@ package logica;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cuenta {
+public abstract class Cuenta {
 
     private static int contador = 1;
-    private List<Transaccion> transacciones = new ArrayList<>();
+    protected List<Transaccion> transacciones = new ArrayList<>();
 
     private String numero;
-    private double saldo;
-    private TipoCuenta tipo;
+    protected double saldo;
+    protected TipoCuenta tipo;
 
     public Cuenta(TipoCuenta tipo) {
+        this.tipo = tipo;
         this.numero = generarNumeroUnico();
         this.saldo = 0;
-        this.tipo = tipo;
     }
 
     private String generarNumeroUnico() {
-        return "C" + (contador++);
+        String prefijo = switch (tipo) {
+            case AHORRO -> "CA";
+            case CORRIENTE -> "CC";
+        };
+        return prefijo + (contador++);
     }
 
     public String getNumero() {
@@ -48,21 +52,23 @@ public class Cuenta {
         }
     }
 
-    public boolean retirar(double monto) {
-        if (monto > 0 && monto <= saldo) {
-            saldo -= monto;
+    public abstract boolean retirar(double monto);
+
+    public boolean transferirA(Cuenta destino, double monto) {
+        if (this.retirar(monto)) {
+            destino.depositar(monto);
+
+            this.agregarTransaccion(TipoTransaccion.TRANSFERENCIA, monto,
+                    "Transferencia a cuenta " + destino.getNumero());
+
+            destino.agregarTransaccion(TipoTransaccion.TRANSFERENCIA, monto,
+                    "Transferencia recibida de cuenta " + this.getNumero());
+
             return true;
         }
         return false;
     }
 
-    public boolean transferirA(Cuenta destino, double monto) {
-        if (this.retirar(monto)) {
-            destino.depositar(monto);
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public String toString() {

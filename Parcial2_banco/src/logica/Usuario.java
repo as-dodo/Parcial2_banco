@@ -43,7 +43,7 @@ public abstract class Usuario {
         return true;
     }
 
-    public abstract void Login();
+    public abstract void Login(Banco banco);
 
-    public abstract void Menu();
+    public abstract void Menu(Banco banco);
 }
