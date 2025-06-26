@@ -29,16 +29,4 @@ public class Banco {
         }
         return null;
     }
-
-    public void mostrarResumen() {
-        for (Cliente c : clientes) {
-            System.out.println(c);
-            for (Cuenta cuenta : c.getCuentas()) {
-                System.out.println("  " + cuenta);
-                for (Transaccion t : cuenta.getTransacciones()) {
-                    System.out.println("    " + t);
-                }
-            }
-        }
-    }
 }

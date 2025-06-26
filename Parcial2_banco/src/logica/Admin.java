@@ -16,11 +16,6 @@ public class Admin extends Usuario{
 
     }
 
-    public static void cargarAdmins() {
-        admins.add(new Admin("Anastasia", "anastasia@gmail.com", "1234"));
-        admins.add(new Admin("Django", "django@gmail.com", "abcd"));
-    }
-
     public static List<Admin> getAdmins() {
         return admins;
     }

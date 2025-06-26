@@ -34,15 +34,6 @@ public class Cliente extends Usuario{
         return cuentas;
     }
 
-    public void agregarCuenta(Cuenta cuenta) {
-        cuentas.add(cuenta);
-    }
-
-    public Cuenta getCuenta() {
-        return cuentas.get(0);
-    }
-
-
     @Override
     public void Login(Banco banco) {
         Cliente encontrado = banco.buscarClientePorCredenciales(this.getEmail(), this.getContrasenia());

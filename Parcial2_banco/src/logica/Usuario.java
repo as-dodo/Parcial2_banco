@@ -35,14 +35,6 @@ public abstract class Usuario {
         this.contrasenia = contrasenia;
     }
 
-    public boolean cambiarContrasenia(String actual, String nueva) {
-        if (!this.contrasenia.equals(actual)) {
-            return false;
-        }
-        setContrasenia(nueva);
-        return true;
-    }
-
     public abstract void Login(Banco banco);
 
     public abstract void Menu(Banco banco);

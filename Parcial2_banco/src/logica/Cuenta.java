@@ -18,6 +18,10 @@ public abstract class Cuenta {
         this.saldo = 0;
     }
 
+    public String getNumero() {
+        return numero;
+    }
+
     private String generarNumeroUnico() {
         String prefijo = switch (tipo) {
             case AHORRO -> "CA";
@@ -26,16 +30,18 @@ public abstract class Cuenta {
         return prefijo + (contador++);
     }
 
-    public String getNumero() {
-        return numero;
-    }
-
     public double getSaldo() {
         return saldo;
+    }
+    public void setSaldo(double saldo) {
+        this.saldo = saldo;
     }
 
     public TipoCuenta getTipo() {
         return tipo;
+    }
+    public void setTipo(TipoCuenta tipo) {
+        this.tipo = tipo;
     }
 
     public List<Transaccion> getTransacciones() {
