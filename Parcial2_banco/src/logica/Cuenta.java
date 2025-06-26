@@ -40,6 +40,7 @@ public abstract class Cuenta {
     public TipoCuenta getTipo() {
         return tipo;
     }
+
     public void setTipo(TipoCuenta tipo) {
         this.tipo = tipo;
     }
